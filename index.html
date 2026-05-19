@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sơ đồ Tổ chức Bộ máy Nhà nước</title>
+    
+    <!-- Tích hợp React & Babel để chạy trực tiếp trên trình duyệt -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Tích hợp Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Tùy chỉnh Font chữ -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #f8fafc; 
+            margin: 0; 
+        }
+        
+        /* Tùy chỉnh thanh cuộn ngang/dọc mượt mà */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        .fade-in { animation: fadeIn 0.8s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // Biểu tượng Quốc Huy
+        const QuocHuyIcon = () => (
+            <img 
+                src="https://cdn.haitrieu.com/wp-content/uploads/2021/11/Quoc-Huy-Viet-Nam-1011x1024.png" 
+                alt="Quốc Huy Việt Nam"
+                className="w-9 h-9 mb-2 drop-shadow-md object-contain transition-transform duration-300 group-hover:scale-110"
+                onError={(e) => { e.target.style.display = 'none'; }}
+            />
+        );
+
+        // Component 1: Card Thông tin
+        const OrgCard = ({ title, subtitle, role, type = "primary", className = "", iconUrl }) => {
+            const baseStyle = "w-48 rounded-xl border-2 p-4 flex flex-col justify-center items-center text-center shadow-md bg-white relative z-10 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl cursor-default group";
+            
+            let typeStyle = "";
+            if (type === "primary") typeStyle = "border-red-300 bg-red-50 text-red-900";
+            if (type === "secondary") typeStyle = "border-indigo-300 bg-indigo-50 text-indigo-900";
+            if (type === "action") typeStyle = "border-yellow-400 bg-yellow-50 text-yellow-900 border-dashed hover:border-solid hover:bg-yellow-100";
+
+            return (
+                <div className={`${baseStyle} ${typeStyle} ${className}`}>
+                    {iconUrl ? (
+                        <img 
+                            src={iconUrl} 
+                            alt={`Logo ${title}`}
+                            className="w-9 h-9 mb-2 drop-shadow-md object-contain transition-transform duration-300 group-hover:scale-110"
+                            onError={(e) => { e.target.style.display = 'none'; }}
+                        />
+                    ) : (type === 'primary' && <QuocHuyIcon />)}
+                    <h3 className={`font-bold text-sm tracking-wide ${type === 'primary' ? 'uppercase' : ''}`}>{title}</h3>
+                    {subtitle && <p className="text-xs font-semibold mt-1 opacity-90">{subtitle}</p>}
+                    {role && <p className="text-[11px] mt-2 pt-2 border-t border-black/10 w-full italic opacity-80">{role}</p>}
+                </div>
+            );
+        };
+
+        // Component 2: Đường nối dọc
+        const VLine = ({ h = "h-8" }) => (
+            <div className={`w-[2px] ${h} bg-slate-400 mx-auto transition-colors duration-300`}></div>
+        );
+
+        // Component chính: Ứng dụng
+        const App = () => {
+            return (
+                <div className="min-h-screen flex flex-col items-center py-16 px-10 overflow-x-auto fade-in">
+                    
+                    {/* Tiêu đề */}
+                    <div className="text-center mb-20 sticky left-0 right-0">
+                        <h1 className="text-3xl font-extrabold text-slate-800 uppercase tracking-tight">Sơ đồ Tổ chức Bộ máy Nhà nước</h1>
+                    </div>
+
+                    {/* Vùng chứa Sơ đồ - Cố định chiều rộng tối thiểu để không bị vỡ layout */}
+                    <div className="relative flex flex-col items-center min-w-[1700px]">
+
+                        {/* --- TẦNG 1: QUỐC HỘI & HỘI ĐỒNG --- */}
+                        <div className="relative flex items-center justify-center">
+                            <OrgCard title="QUỐC HỘI" type="primary" />
+                            {/* Đường ngang nối ra Hội đồng */}
+                            <div className="absolute left-full top-1/2 w-20 h-[2px] bg-slate-400 -translate-y-1/2"></div>
+                            <div className="absolute left-[calc(100%+5rem)] top-1/2 -translate-y-1/2">
+                                <OrgCard title="HỘI ĐỒNG BẦU CỬ QUỐC GIA" type="primary" className="w-56" />
+                            </div>
+                        </div>
+
+                        {/* --- TRỤC DỌC TỪ QUỐC HỘI XUỐNG CHỦ TỊCH NƯỚC --- */}
+                        <div className="relative">
+                            <VLine h="h-32" />
+                            {/* Điểm rẽ nhánh sang trái cho Chủ tịch nước */}
+                            <div className="absolute top-1/2 right-[1px] w-[400px] h-[2px] bg-slate-400 -translate-y-1/2"></div>
+                            <div className="absolute top-1/2 right-[400px] -translate-y-1/2">
+                                <OrgCard title="CHỦ TỊCH NƯỚC" type="primary" />
+                            </div>
+                        </div>
+
+                        {/* --- TRỤC DỌC TỪ CHỦ TỊCH NƯỚC XUỐNG THANH PHÂN PHỐI NGANG --- */}
+                        <VLine h="h-12" />
+
+                        {/* --- THANH PHÂN PHỐI NGANG (MAIN BEAM) & CÁC NHÁNH CON --- */}
+                        <div className="relative w-[1400px]">
+                            {/* Đường ngang chính */}
+                            <div className="absolute top-0 left-0 w-full h-[2px] bg-slate-400 shadow-sm"></div>
+
+                            {/* 1. Nhánh Chính Phủ (0%) */}
+                            <div className="absolute top-0 left-[0%] flex flex-col items-center -translate-x-1/2">
+                                <VLine h="h-12" />
+                                <OrgCard title="CHÍNH PHỦ" type="primary" />
+                                <VLine h="h-10" />
+
+                                {/* Phân nhánh con của Chính Phủ */}
+                                <div className="relative w-[480px]">
+                                    {/* Đường ngang nối An Phương & Minh Trung */}
+                                    <div className="absolute top-0 left-[25%] right-[25%] h-[2px] bg-slate-400"></div>
+                                    <div className="flex justify-between w-full">
+                                        {/* An Phương */}
+                                        <div className="w-1/2 flex flex-col items-center">
+                                            <VLine h="h-8" />
+                                            <OrgCard title="An Phương" subtitle="Phó Chủ tịch" role="Phân tích tài chính" type="secondary" />
+                                            <VLine h="h-10" />
+                                            <OrgCard title="Điền vào phần còn lại của sơ đồ" role="Viết vai trò của họ" type="action" />
+                                        </div>
+                                        {/* Minh Trung */}
+                                        <div className="w-1/2 flex flex-col items-center">
+                                            <VLine h="h-8" />
+                                            <OrgCard title="Minh Trung" subtitle="Phó Chủ tịch" role="Phân phối tài chính" type="secondary" />
+                                            <VLine h="h-10" />
+                                            <OrgCard title="Điền vào phần còn lại của sơ đồ" role="Viết vai trò của họ" type="action" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* 2. Nhánh Minh Tú (25%) */}
+                            <div className="absolute top-0 left-[25%] flex flex-col items-center -translate-x-1/2">
+                                {/* Căn chỉnh độ dài đường kẻ để Minh Tú nằm ngang hàng với An Phương (12px + 120px + 40px) */}
+                                <VLine h="h-[188px]" />
+                                <OrgCard title="Minh Tú" subtitle="Phó Chủ tịch Cao cấp" type="secondary" />
+                                <VLine h="h-10" />
+                                <OrgCard title="Điền vào phần còn lại của sơ đồ" role="Viết vai trò của họ" type="action" />
+                            </div>
+
+                            {/* 3. Nhánh Tòa Án (50%) */}
+                            <div className="absolute top-0 left-[50%] flex flex-col items-center -translate-x-1/2">
+                                <VLine h="h-12" />
+                                <OrgCard title="TÒA ÁN NHÂN DÂN CAO" type="primary" iconUrl="https://upload.wikimedia.org/wikipedia/commons/e/e0/Emblem_of_Vietnam_People%27s_Courts.png" />
+                                <VLine h="h-10" />
+                                <OrgCard title="Minh Thảo" subtitle="Phó Chủ tịch An ninh" type="secondary" />
+                                <VLine h="h-10" />
+                                <OrgCard title="Điền vào phần còn lại của sơ đồ" role="Viết vai trò của họ" type="action" />
+                            </div>
+
+                            {/* 4. Nhánh Viện Kiểm Sát (75%) */}
+                            <div className="absolute top-0 left-[75%] flex flex-col items-center -translate-x-1/2">
+                                <VLine h="h-12" />
+                                <OrgCard title="VIỆN KIỂM SOÁT NHÂN DÂN TỐI CAO" type="primary" className="w-56" iconUrl="https://upload.wikimedia.org/wikipedia/vi/thumb/b/ba/Ph%C3%B9_hi%E1%BB%87u_Vi%E1%BB%87n_ki%E1%BB%83m_s%C3%A1t_nh%C3%A2n_d%C3%A2n.svg/250px-Ph%C3%B9_hi%E1%BB%87u_Vi%E1%BB%87n_ki%E1%BB%83m_s%C3%A1t_nh%C3%A2n_d%C3%A2n.svg.png?_=20220703040151" />
+                                <VLine h="h-10" />
+                                <OrgCard title="Minh Thành" subtitle="Phó Chủ tịch Quản lý" role="Quan hệ Công chúng" type="secondary" />
+                                <VLine h="h-10" />
+                                <OrgCard title="Điền vào phần còn lại của sơ đồ" role="Viết vai trò của họ" type="action" />
+                            </div>
+
+                            {/* 5. Nhánh Kiểm Toán (100%) */}
+                            <div className="absolute top-0 left-[100%] flex flex-col items-center -translate-x-1/2">
+                                <VLine h="h-12" />
+                                <OrgCard title="KIỂM TOÁN NHÀ NƯỚC" type="primary" iconUrl="https://upload.wikimedia.org/wikipedia/vi/c/cb/Bi%E1%BB%83u_tr%C6%B0ng_T%E1%BB%95ng_Ki%E1%BB%83m_to%C3%A1n_Nh%C3%A0_n%C6%B0%E1%BB%9Bc.png" />
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // Render ứng dụng
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
